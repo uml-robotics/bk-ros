@@ -1,0 +1,15 @@
+<launch>
+
+    <!-- Amcl and map server stuff for localization -->
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/amcl_diff.launch"/>
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/map_server.launch"/>
+
+    <!-- Pioneer drivers (including urg laser) -->
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/ROSARIA.launch"/>
+
+    <!-- Servo driver, center command, and ptu transform -->
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/servos.launch"/>
+    <node name="center_ptu" pkg="servos" type="center_ptu.py"/>
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/ptfsetup.launch"/>
+
+</launch>
