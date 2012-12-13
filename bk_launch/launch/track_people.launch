@@ -1,4 +1,5 @@
 <!-- Starts person tracking -->
 <launch>
+    <include file="$(find bk_launch)/launch/bringup_pioneer.launch"/>
 	<include file="$(find people_tracking_filter)/launch/start_people_tracking.launch" />
 </launch>

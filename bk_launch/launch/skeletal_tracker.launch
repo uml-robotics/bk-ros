@@ -1,16 +1,10 @@
 <!-- Starts skeleton tracking -->
 <launch>
 	<!-- Kinect driver -->
-	<!--include file="$(find bk_launch)/launch/bringup_kinect.launch" /-->
+	<include file="$(find bk_launch)/launch/bringup_kinect.launch" />
 	
-	<!-- Setup the debugging prefix -->
-	<arg name="debug" default="false"/>
-	<arg if="$(arg debug)" name="launch_prefix" value="gdb -ex run -args"/>
-	<!--arg if="$(arg debug)" name="launch_prefix" value="xterm -rv -e gdb -ex run -args"/-->
-	<arg unless="$(arg debug)" name="launch_prefix" value=""/>
-
 	<!-- Node that tracks skeletons -->
-  <node pkg="bk_skeletal_tracker" type="tracker" name="bk_skeletal_tracker" output="screen" launch-prefix="$(arg launch_prefix)">
+  <node pkg="bk_skeletal_tracker" type="tracker" name="bk_skeletal_tracker" output="screen">
     <param name="camera_frame_id"  value="camera_depth_optical_frame" />
     <param name="smoothing_factor" value="0.90"/>
     <param name="pub_rate" value="20.0"/>
