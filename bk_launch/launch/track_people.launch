@@ -1,5 +1,16 @@
 <!-- Starts person tracking -->
 <launch>
-    <include file="$(find bk_launch)/launch/bringup_pioneer.launch"/>
+
+    <!-- Robot parameter -->
+    <arg name="use_pioneer" default="true"/>
+
+    <!-- Topic name parameters -->
+
+    <!-- Launch the pioneer if that variable is set -->
+    <group if="$(arg use_pioneer)">
+        <include file="$(find bk_launch)/launch/bringup_pioneer.launch"/>
+    </group>
+
+    <include file="$(find bk_launch)/launch/bringup_kinect.launch"/>
 	<include file="$(find people_tracking_filter)/launch/start_people_tracking.launch" />
 </launch>
