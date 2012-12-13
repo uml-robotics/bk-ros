@@ -1,6 +1,7 @@
 *~
 *.pyc
 *.orig
+*.swp
 
 # Exclude bin, build, lib, and msg_gen directories
 bk_configs/build/
