@@ -17,7 +17,7 @@ link_directories (${LIBUSB_LIBRARY_DIRS})
 
 find_package(GLUT)
 find_package(OpenGL)
-
+find_package(OpenCV REQUIRED)
 
 # Dynamic reconfigure
 #rosbuild_find_ros_package(dynamic_reconfigure)
@@ -27,4 +27,5 @@ find_package(OpenGL)
 
 
 rosbuild_add_executable (tracker src/main.cpp src/SceneDrawer.cpp)
-target_link_libraries (tracker ${GLUT_LIBRARY} ${OPENGL_LIBRARY}  ${SSE_FLAGS})
+rosbuild_link_boost(tracker signals)
+target_link_libraries (tracker ${GLUT_LIBRARY} ${OPENGL_LIBRARY}  ${SSE_FLAGS} ${OpenCV_LIBS})
