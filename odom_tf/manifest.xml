@@ -1,0 +1,19 @@
+<package>
+  <description brief="odom_tf">
+
+     odom_tf
+
+  </description>
+  <author>csrobot</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/odom_tf</url>
+  <depend package="roscpp"/>
+  <depend package="tf"/>
+  <depend package="geometry_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="sensor_msgs"/>
+
+</package>
+
+
