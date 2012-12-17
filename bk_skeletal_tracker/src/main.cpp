@@ -99,6 +99,8 @@ ros::Time save_timer_;
 // ROS stuff
 ros::Publisher cloud_pub_, pos_pub_, has_lock_pub_, sim_pub_, sim_to_orig_pub_;
 std::string    frame_id_;
+std::string    camera_input_topic_;
+std::string    camera_info_topic_;
 tf::TransformListener* tfl_;
 
 double pub_rate_temp_;
@@ -788,6 +790,8 @@ int main(int argc, char **argv)
 	
 	frame_id_ = "derpderpderp";
 	pnh.getParam("camera_frame_id", frame_id_);
+    pnh.getParam("camera_input_topic", camera_input_topic_);
+    pnh.getParam("camera_info_topic", camera_info_topic_);
 	
 	pnh.param("smoothing_factor", smoothing_factor_, 0.5);
 	pnh.param("reliability"     , reliability_     , 0.5);
@@ -802,7 +806,7 @@ int main(int argc, char **argv)
 	pnh.param("match_threshold" , tempdouble       , 0.9);
 	PersonCal::setMatchThresh(tempdouble);
 	
-	int hbins, sbins;
+int hbins, sbins;
 	pnh.param("hist_h_bins" , hbins       , 30);
 	pnh.param("hist_s_bins" , sbins       , 30);
 	PersonCal::setHistogramParameters(hbins, sbins);
@@ -830,18 +834,18 @@ int main(int argc, char **argv)
 	// Advertise a position measure message.
 	pos_pub_ = nh_.advertise<people_msgs::PositionMeasurement>("/people_tracker_measurements",1);
   
-  has_lock_pub_ = nh_.advertise<std_msgs::Float64>("bk_skeletal_tracker/has_lock", 0);
+    has_lock_pub_ = nh_.advertise<std_msgs::Float64>("bk_skeletal_tracker/has_lock", 0);
   
 	// Subscribe to people tracker filter state
 	latest_tracker_.first = "";
 	ros::Subscriber pos_sub = nh_.subscribe("people_tracker_filter", 5, &posCallback);
 	
 	got_rgb_ = false;
-	image_transport::Subscriber image_sub = it.subscribe("in_image", 1, boost::bind(&imageCB, _1) );
+	image_transport::Subscriber image_sub = it.subscribe(camera_input_topic_, 1, boost::bind(&imageCB, _1) );
 
 	// Subscribe to camera info
 	got_cam_info_ = false;
-	ros::Subscriber cam_info_sub = nh_.subscribe("camera/rgb/camera_info", 1, cam_info_cb);
+	ros::Subscriber cam_info_sub = nh_.subscribe(camera_info_topic_, 1, cam_info_cb);
 	ROS_INFO("[bk_skeletal_tracker] Waiting for camera info...");
 	
 	// Get one message and then unsubscribe
