@@ -1,0 +1,15 @@
+<!-- Starts the OpenNI Kinect driver and sets up static transforms -->
+<launch>
+
+    <arg name="kinect_ns" default="camera"/>
+
+	<!-- Kinect driver -->
+	<include file="$(find openni_launch)/launch/openni.launch">
+        <arg name="camera" value="$(arg kinect_ns)"/>
+    </include>
+	
+	<param name="/$(arg kinect_ns)/driver/data_skip" value="10"/>
+	<param name="/$(arg kinect_ns)/driver/depth_ir_offset_x" value="0.8"/>
+	<param name="/$(arg kinect_ns)/driver/depth_ir_offset_y" value="23.6"/>
+	
+</launch>

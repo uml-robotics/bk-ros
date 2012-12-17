@@ -3,14 +3,43 @@
 
     <!-- Robot parameter -->
     <arg name="use_pioneer" default="true"/>
+    <arg name="use_margo" default="false"/>
 
-    <!-- Topic name parameters -->
+    <!-- Topic/frame parameters -->
+    <arg name="laser_scan_topic"   value="/scan"         />
+    <arg name="cmd_vel_topic"      value="/cmd_vel"      />
+    
+    <arg name="map_frame"          value="/map"          />
+    <arg name="odom_frame"         value="/odom"         />
+    <arg name="base_link_frame"    value="/base_link"    />
+    <arg name="laser_link_frame"   value="/urg_link"     />
+
+    <!-- Namespace parameters -->
+    <arg name="kinect_ns" value="camera"/>
 
     <!-- Launch the pioneer if that variable is set -->
     <group if="$(arg use_pioneer)">
-        <include file="$(find bk_launch)/launch/bringup_pioneer.launch"/>
+        <include file="$(find bk_launch)/launch/bringup_pioneer.launch">
+            <arg name="laser_scan_topic"   value="$(arg laser_scan_topic)"   />
+            <arg name="cmd_vel_topic"      value="$(arg cmd_vel_topic)"      />
+            <arg name="map_frame"          value="$(arg map_frame)"          />
+            <arg name="odom_frame"         value="$(arg odom_frame)"         />
+            <arg name="base_link_frame"    value="$(arg base_link_frame)"    />
+            <arg name="laser_link_frame"   value="$(arg laser_link_frame)"   />
+            <arg name="kinect_ns"          value="$(arg kinect_ns)"          />
+        </include>
     </group>
 
-    <include file="$(find bk_launch)/launch/bringup_kinect.launch"/>
-	<include file="$(find people_tracking_filter)/launch/start_people_tracking.launch" />
+    <!-- Launch Margo if that variable is set -->
+    <group if="$(arg use_margo)">
+        <!-- Put Margo's launch shit in here -->
+    </group>
+
+	<include file="$(find people_tracking_filter)/launch/start_people_tracking.launch">
+        <arg name="laser_scan_topic"  value="$(arg laser_scan_topic)"  />
+        <arg name="kinect_ns"         value="$(arg kinect_ns)"         />
+        <arg name="odom_frame"        value="$(arg odom_frame)"        />
+        <arg name="base_link_frame"   value="$(arg base_link_frame)"   />
+    </include>
+
 </launch>

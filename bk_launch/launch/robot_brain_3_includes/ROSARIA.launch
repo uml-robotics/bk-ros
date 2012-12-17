@@ -1,20 +1,28 @@
 <launch>
 
-  <node name="rosaria" pkg="ROSARIA" type="RosAria" output="screen"> 
-     <param name="spam" type="bool" value="true" />
-     <param name="port" type="string" value="/dev/Aria" />
-     <param name="frame_id" type="string" value="" />
-     <remap from="rosaria/cmd_vel" to="/cmd_vel"/>
-     <remap from="rosaria/odom" to ="/odom" />
-  </node>
+    <arg name="laser_scan_topic"  default="/scan"       />
+    <arg name="cmd_vel_topic"     default="/cmd_vel"    />
+    <arg name="odom_frame"        default="/odom"       />
+    <arg name="laser_link_frame"  default="/urg_link"   />
+    <arg name="base_link_frame"   default="/base_link"  />
 
-  <node name="hokuyo" pkg="hokuyo_node" type="hokuyo_node" respawn="false" output="screen" >
-      <param name="calibrate_time" type="bool" value="true"/>
-      <param name="port" type="string" value="/dev/ttyACM0"/>
-      <param name="intensity" type="bool" value="false"/>
-      <param name="frame_id" value="/urg_link"/>
-  </node>
-  <node name="hokuyo_tf" pkg="tf" type="static_transform_publisher" args="0.20 0 0.29 0 0 0 base_link urg_link 10" />
-  <node name="kinect_tf" pkg="tf" type="static_transform_publisher" args="0.20 0 0.40 0 0 0 base_link pan_link 10" />
+    <node name="rosaria" pkg="ROSARIA" type="RosAria" output="screen"> 
+        <param name="spam" type="bool" value="true" />
+        <param name="port" type="string" value="/dev/Aria" />
+        <param name="frame_id" type="string" value="" />
+        <remap from="/rosaria/cmd_vel" to="/$(arg cmd_vel_topic)"/>
+        <remap from="/odom" to="/$(arg odom_frame)"/>
+    </node>
+    
+    <node name="hokuyo" pkg="hokuyo_node" type="hokuyo_node" respawn="false" output="screen" >
+        <param name="calibrate_time" type="bool" value="true"/>
+        <param name="port" type="string" value="/dev/ttyACM0"/>
+        <param name="intensity" type="bool" value="false"/>
+        <param name="frame_id" value="$(arg laser_link_frame)"/>
+        <remap from="/scan" to="$(arg laser_scan_topic)"/>
+    </node>
+
+    <node name="hokuyo_tf" pkg="tf" type="static_transform_publisher" args="0.20 0 0.29 0 0 0 $(arg base_link_frame) $(arg laser_link_frame) 10" />
+    <node name="kinect_tf" pkg="tf" type="static_transform_publisher" args="0.20 0 0.40 0 0 0 $(arg base_link_frame) pan_link 10" />
 
 </launch>

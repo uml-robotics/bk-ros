@@ -1,15 +1,54 @@
 <launch>
+    <!-- Topic/frame parameters -->
+    <arg name="laser_scan_topic"   default="/scan"       />
+    <arg name="cmd_vel_topic"      default="/cmd_vel"    />
+    
+    <arg name="map_frame"          default="/map"        />
+    <arg name="odom_frame"         default="/odom"       />
+    <arg name="base_link_frame"    default="/base_link"  />
+    <arg name="laser_link_frame"   default="/urg_link"   />
+
+    <arg name="kinect_ns"          default="camera"      />
+
+    <!-- Launch file for the kinect -->
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/bringup_kinect.launch">
+        <arg name="kinect_ns" value="$(arg kinect_ns)"/>
+    </include>
 
     <!-- Amcl and map server stuff for localization -->
-    <include file="$(find bk_launch)/launch/robot_brain_3_includes/amcl_diff.launch"/>
-    <include file="$(find bk_launch)/launch/robot_brain_3_includes/map_server.launch"/>
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/amcl_diff.launch">
+        <arg name="map_frame"         value="$(arg map_frame)"        />
+        <arg name="odom_frame"        value="$(arg odom_frame)"       />
+        <arg name="base_link_frame"   value="$(arg base_link_frame)"  />
+        <arg name="laser_scan_topic"  value="$(arg laser_scan_topic)" />
+    </include>
+
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/map_server.launch">
+        <arg name="map_frame"         value="$(arg map_frame)"        />
+        <arg name="laser_scan_topic"  value="$(arg laser_scan_topic)" />
+    </include>
 
     <!-- Pioneer drivers (including urg laser) -->
-    <include file="$(find bk_launch)/launch/robot_brain_3_includes/ROSARIA.launch"/>
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/ROSARIA.launch">
+        <arg name="laser_scan_topic"  value="$(arg laser_scan_topic)"  />
+        <arg name="cmd_vel_topic"     value="$(arg cmd_vel_topic)"     />
+        <arg name="odom_frame"        value="$(arg odom_frame)"        />
+        <arg name="laser_link_frame"  value="$(arg laser_link_frame)"  />
+        <arg name="base_link_frame"   value="$(arg base_link_frame)"   />
+    </include>
 
     <!-- Servo driver, center command, and ptu transform -->
-    <include file="$(find bk_launch)/launch/robot_brain_3_includes/servos.launch"/>
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/servos.launch">
+        <arg name="kinect_ns" value="$(arg kinect_ns)" />
+    </include>
+
+    <!-- This node centers the ptu, because the kinect is -->
     <node name="center_ptu" pkg="servos" type="center_ptu.py"/>
-    <include file="$(find bk_launch)/launch/robot_brain_3_includes/ptfsetup.launch"/>
+
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/ptfsetup.launch">
+        <arg name="odom_frame"        value="$(arg odom_frame)"        />
+        <arg name="base_link_frame"   value="$(arg base_link_frame)"   />
+        <arg name="laser_link_frame"  value="$(arg laser_link_frame)"  />
+    </include>
 
 </launch>

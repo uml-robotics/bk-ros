@@ -1,12 +1,15 @@
 <launch>
     
+    <arg name="kinect_ns" default="camera" />
+    
     <include file="$(find bk_launch)/launch/robot_brain_3_includes/controller_manager.launch" />
     <include file="$(find bk_launch)/launch/robot_brain_3_includes/controller_spawner.launch" />
         
     <node name="DynamixelInterface" pkg="dynamixel_interface" type="dynamixel_interface.py" output="screen" />
 
     <node name="DynamixelTransform" pkg="pan_tilt_tf" type="pan_tilt_tf" output="screen" > 
+        <param name="kinect_ns" value="$(arg kinect_ns)"/>
         <rosparam file="$(find files)/robot_brain_3/servos.yaml" command="load" />
-        
     </node> 
+
 </launch>

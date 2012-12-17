@@ -1,10 +1,15 @@
 <!-- Starts skeleton tracking -->
 <launch>
+
+    <arg name="kinect_ns" default="camera" />
+
     <!-- Node that tracks skeletons -->
     <node pkg="bk_skeletal_tracker" type="tracker" name="bk_skeletal_tracker" output="screen">
-        <param name="camera_frame_id"  value="camera_depth_optical_frame" />
-        <param name="smoothing_factor" value="0.90"/>
-        <param name="pub_rate" value="20.0"/>
+        <param name="camera_input_topic" value="/$(arg kinect_ns)/rgb/image_color"     />
+        <param name="camera_info_topic"  value="$(arg kinect_ns)/rgb/camera_info"      /> <!-- These camera parameters are okay because this is what topics need to be there -->
+        <param name="camera_frame_id"    value="/$(arg kinect_ns)_depth_optical_frame" /> <!-- and are published by openni under these names always. -->
+        <param name="smoothing_factor"   value="0.90"                                  />
+        <param name="pub_rate"           value="20.0"                                  />
         
         <param name="reliability" value="0.85"/>
         
@@ -29,7 +34,5 @@
         <param name="rgb_shift_v" value="-46.0"/>
         <param name="rgb_shift_h" value="-28.0"/>
         <param name="rgb_scale_z" value="0.89"/>
-
-        <remap from="in_image" to="/camera/rgb/image_color"/>
     </node>
 </launch>

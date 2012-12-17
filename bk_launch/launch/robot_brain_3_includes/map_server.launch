@@ -1,6 +1,12 @@
 <launch>
+
+    <!-- Topic/frame parameters -->
+    <arg name="map_frame"        default="/map"  />
+    <arg name="laser_scan_topic" default="/scan" />
+
     <node name="map_server" pkg="map_server" type="map_server" args="$(find pioneer_2dnav)/maps/hallway.png 0.02868" output="screen">
-        <param name="scan" type="string" value="/scan" />
-        <param name="frame_id" value="/map" />
+        <param name="scan" type="string" value="$(arg laser_scan_topic)" />
+        <param name="frame_id" value="$(arg map_frame)" />
     </node>
+
 </launch>
