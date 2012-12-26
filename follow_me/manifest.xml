@@ -1,0 +1,18 @@
+<package>
+  <description brief="follow_me">
+
+     follow_me
+
+  </description>
+  <author>csrobot</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/follow_me</url>
+
+    <depend package="people_msgs"/>
+    <depend package="geometry_msgs"/>
+    <depend package="tf"/>
+
+</package>
+
+

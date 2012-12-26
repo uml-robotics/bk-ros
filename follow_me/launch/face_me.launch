@@ -1,0 +1,12 @@
+<launch>
+
+    <arg name="cmd_vel_topic" default="/cmd_vel"/>
+    <arg name="base_link_frame" default="/base_link"/>
+
+    <!-- launch the face_me node -->
+    <node name="face_me" pkg="follow_me" type="face_me.py" output="screen">
+        <param name="cmd_vel_topic" value="$(arg cmd_vel_topic)"/>
+        <param name="base_link_frame" value="$(arg base_link_frame)"/>
+    </node>
+
+</launch>
