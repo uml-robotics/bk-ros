@@ -1,6 +1,10 @@
 <!-- Starts person tracking -->
 <launch>
 
+    <!-- Action parameter -->
+    <arg name="follow" default="false"/>
+    <arg name="face_me" default="false"/>
+
     <!-- Robot parameter -->
     <arg name="use_pioneer" default="true"/>
     <arg name="use_margo" default="false"/>
@@ -35,11 +39,25 @@
         <!-- Put Margo's launch shit in here -->
     </group>
 
+    <!-- Start the tracking nodes -->
 	<include file="$(find people_tracking_filter)/launch/start_people_tracking.launch">
         <arg name="laser_scan_topic"  value="$(arg laser_scan_topic)"  />
         <arg name="kinect_ns"         value="$(arg kinect_ns)"         />
         <arg name="odom_frame"        value="$(arg odom_frame)"        />
         <arg name="base_link_frame"   value="$(arg base_link_frame)"   />
     </include>
+
+    <!-- Engage the following behavior, if that variable is set -->
+    <group if="$(arg follow)">
+        <!-- put follow launch file here -->
+    </group>
+
+    <!-- Engage facing behavior, if that variable is set -->
+    <group if="$(arg face_me)">
+        <include file="$(find follow_me)/launch/face_me.launch">
+            <arg name="cmd_vel_topic"   value="$(arg cmd_vel_topic)"   />
+            <arg name="base_link_frame" value="$(arg base_link_frame)" />
+        </include>
+    </group>
 
 </launch>
