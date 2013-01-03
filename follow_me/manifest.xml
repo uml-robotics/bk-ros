@@ -9,6 +9,8 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/follow_me</url>
 
+    <depend package="roscpp"/>
+    <depend package="move_base"/>
     <depend package="people_msgs"/>
     <depend package="geometry_msgs"/>
     <depend package="tf"/>
