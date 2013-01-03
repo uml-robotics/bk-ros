@@ -55,3 +55,6 @@ segment_lib/lib/
 /bk_launch/bags/2012-04-10_person_tracking_tests/2012-04-10-13-05-22.bag
 /bk_launch/bags/2012-04-10_person_tracking_tests/2012-04-10-13-19-08.bag
 /bk_launch/bags/notes
+
+/follow_me/bin/
+/follow_me/build/
