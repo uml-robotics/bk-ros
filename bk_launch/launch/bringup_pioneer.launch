@@ -51,4 +51,9 @@
         <arg name="laser_link_frame"  value="$(arg laser_link_frame)"  />
     </include>
 
+    <!-- Launches the move_base stuff -->
+    <include file="$(find bk_launch)/launch/robot_brain_3_includes/move_base.launch">
+        <arg name="cmd_vel_topic" value="$(arg cmd_vel_topic)"/>
+    </include>
+
 </launch>

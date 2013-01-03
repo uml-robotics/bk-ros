@@ -1,0 +1,22 @@
+<launch>
+
+    <arg name="cmd_vel_topic" default="/cmd_vel"/>
+
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+        <param name="~tf_prefix" value="" />
+        <param name="oscillation_timeout" value="5" />
+        <param name="controller_frequency" value="10" />
+        <param name="planner_frequency" value="0" />
+        <param name="controller_patience" value="5" />
+        <param name="planner_patience" value="3" />
+        <rosparam param="recovery_behaviors"> [{name: conservative_reset, type: clear_costmap_recovery/ClearCostmapRecovery}, {name: aggressive_reset, type: clear_costmap_recovery/ClearCostmapRecovery},{name: rotate_recovery, type: rotate_recovery/RotateRecovery}] </rosparam> 
+        
+        <rosparam file="$(find bk_launch)/launch/robot_brain_3_includes/move_base_params/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find bk_launch)/launch/robot_brain_3_includes/move_base_params/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find bk_launch)/launch/robot_brain_3_includes/move_base_params/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find bk_launch)/launch/robot_brain_3_includes/move_base_params/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find bk_launch)/launch/robot_brain_3_includes/move_base_params/base_local_planner_params.yaml" command="load" />
+    </node>
+
+</launch>
