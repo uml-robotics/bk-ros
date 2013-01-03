@@ -49,7 +49,9 @@
 
     <!-- Engage the following behavior, if that variable is set -->
     <group if="$(arg follow)">
-        <!-- put follow launch file here -->
+        <include file="$(find follow_me)/launch/follow.launch">
+            <arg name="base_link_frame" value="$(arg base_link_frame)"/>
+        </include>
     </group>
 
     <!-- Engage facing behavior, if that variable is set -->
