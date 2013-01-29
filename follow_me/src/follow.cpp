@@ -22,6 +22,7 @@
 
 // ROS params
 std::string base_link_frame_ = "/base_link";
+std::string fixed_frame_ = "/odom";
 
 class FollowMe
 {
@@ -42,7 +43,7 @@ public:
     // Constructor
     FollowMe(ros::NodeHandle nh) : 
         nh_(nh),
-        following_dist(0.1),
+        following_dist(0.3),
         min_goal_diff(0.03)
     {
         current_goal = NULL;
@@ -57,13 +58,13 @@ public:
     void trackerCallback(const people_msgs::PositionMeasurementConstPtr& position)
     {
         // Gather information from the input data and transform it to the base_link frame
-        geometry_msgs::PointStamped pt;
-        pt.header = position->header;
-        pt.point  = position->pos;
+        geometry_msgs::PointStamped goal;
+        goal.header = position->header;
+        goal.point  = position->pos;
 
-        geometry_msgs::PointStamped transformed_pt;
+        geometry_msgs::PointStamped base_link_frame_goal;
         try{
-            this->tfl_.transformPoint(base_link_frame_, pt, transformed_pt);
+            this->tfl_.transformPoint(base_link_frame_, goal, base_link_frame_goal);
         }
         catch (tf::TransformException& ex){
             ROS_ERROR("(follow) Transform in callback failed.");
@@ -71,38 +72,51 @@ public:
         }
         
         // Calculate the new goal
-        double dist = sqrt( pow(transformed_pt.point.x,2) + pow(transformed_pt.point.y,2) );
+        double dist = sqrt( pow(base_link_frame_goal.point.x,2) + pow(base_link_frame_goal.point.y,2) );
 
         // If the distance from the robot to the target is too small, just return.        
-        if (dist <= this->following_dist){
+        if (dist < this->following_dist){
             return;
         }
 
         // Scale the transformed_pt appropriately, and make it the new goal.
         geometry_msgs::PoseStamped new_goal;
-        new_goal.header = transformed_pt.header;
-        new_goal.pose.position.x = ((dist - this->following_dist)/dist) * transformed_pt.point.x;
-        new_goal.pose.position.y = ((dist - this->following_dist)/dist) * transformed_pt.point.y;
+        new_goal.header = base_link_frame_goal.header;
+        new_goal.pose.position.x = ((dist - this->following_dist)/dist) * base_link_frame_goal.point.x;
+        new_goal.pose.position.y = ((dist - this->following_dist)/dist) * base_link_frame_goal.point.y;
         new_goal.pose.position.z = 0.0;
 
+        // Calculate the orientation of the new_goal in relation to base_link
+        double angle = atan2( new_goal.pose.position.y, new_goal.pose.position.x );
+        // Convert this angle to a quaternion and put it into new_goal.
+        geometry_msgs::Quaternion quat = tf::createQuaternionMsgFromYaw(angle); 
+        new_goal.pose.orientation = quat;
 
-        // If the current goal is not NULL (which it would be until the first callback), make sure that the new_goal and current_goal are not too similar.
+        // Transform this new goal to the fixed frame
+        geometry_msgs::PoseStamped* fixed_frame_goal = new geometry_msgs::PoseStamped;
+        try{
+            this->tfl_.transformPose(fixed_frame_, new_goal, *fixed_frame_goal);
+        }
+        catch (tf::TransformException& ex){
+            ROS_ERROR("(follow) Transform (second) in callback failed.");
+            return;
+        }
+
+        // If the current goal is not NULL (which it would be until the first callback), make sure that the fixed_frame_goal and current_goal are not too similar.
         if (this->current_goal != NULL){
             // Calculate the distance between the two poses.
-            dist = sqrt( pow( (this->current_goal->pose.position.x - new_goal.pose.position.x), 2) + pow( (this->current_goal->pose.position.y - new_goal.pose.position.y), 2) );
+            dist = sqrt( pow( (this->current_goal->pose.position.x - fixed_frame_goal->pose.position.x), 2) + pow( (this->current_goal->pose.position.y - fixed_frame_goal->pose.position.y), 2) );
+            // If the two poses are too close, return and don't replace the old goal or send it to move_base
             if (dist < this->min_goal_diff)
                 return;
         }
 
-        // Calculate the orientation of the new_goal which will now replace the current_goal
-        double angle = atan2( new_goal.pose.position.y, new_goal.pose.position.x );
-        // Convert this angle to a quaternion and put it into current_goal.
-        geometry_msgs::Quaternion quat = tf::createQuaternionMsgFromYaw(angle); 
-        this->current_goal = &new_goal;
-        this->current_goal->pose.orientation = quat; 
+        // Update the current_goal to the fixed_frame_goal
+        delete this->current_goal;
+        this->current_goal = fixed_frame_goal;
 
         // Finally, publish this new pose to move_base.
-        this->goal_pub_.publish(*(this->current_goal));
+        this->goal_pub_.publish(*fixed_frame_goal);
 
         return;
     }
@@ -116,6 +130,8 @@ int main(int argc, char* argv[])
 
     ros::NodeHandle pnh("~");
     pnh.getParam("base_link_frame", base_link_frame_);
+    pnh.getParam("odom_frame", fixed_frame_);
+
 
     ros::NodeHandle nh;
     FollowMe follow(nh);

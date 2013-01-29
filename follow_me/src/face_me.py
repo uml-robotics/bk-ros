@@ -27,8 +27,8 @@ class FaceMe(object):
         self.got_first_goal = False
 
         # A few parameters
-        self.turn_threshold = math.pi/32  # Threshold to stop pursuing the target.
-        self.angular_speed = 0.4
+        self.turn_threshold = math.pi/20  # Threshold to stop pursuing the target.
+        self.angular_speed = 0.6
 
         # Need a transform listener to transform points from kinect_ns to base_link frame
         self.tfl = tf.TransformListener()
