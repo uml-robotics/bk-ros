@@ -10,13 +10,13 @@
     <arg name="use_margo" default="false"/>
 
     <!-- Topic/frame parameters -->
-    <arg name="laser_scan_topic"   value="/scan"         />
-    <arg name="cmd_vel_topic"      value="/cmd_vel"      />
+    <arg name="laser_scan_topic"   value="/scan"      />
+    <arg name="cmd_vel_topic"      value="/cmd_vel"   />
     
-    <arg name="map_frame"          value="/map"          />
-    <arg name="odom_frame"         value="/odom"         />
-    <arg name="base_link_frame"    value="/base_link"    />
-    <arg name="laser_link_frame"   value="/urg_link"     />
+    <arg name="map_frame"          value="/map"       />
+    <arg name="odom_frame"         value="/odom"      />
+    <arg name="base_link_frame"    value="/base_link" />
+    <arg name="laser_link_frame"   value="/urg_link"  />
 
     <!-- Namespace parameters -->
     <arg name="kinect_ns" value="camera"/>
@@ -36,7 +36,7 @@
 
     <!-- Launch Margo if that variable is set -->
     <group if="$(arg use_margo)">
-        <!-- Put Margo's launch shit in here -->
+        <!-- Put Margo's launch stuff in here -->
     </group>
 
     <!-- Start the tracking nodes -->
@@ -51,6 +51,7 @@
     <group if="$(arg follow)">
         <include file="$(find follow_me)/launch/follow.launch">
             <arg name="base_link_frame" value="$(arg base_link_frame)"/>
+            <arg name="odom_frame"      value="$(arg odom_frame)"     />
         </include>
     </group>
 

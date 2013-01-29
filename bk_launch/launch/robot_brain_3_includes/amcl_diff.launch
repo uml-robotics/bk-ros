@@ -41,9 +41,9 @@
         <param name="resample_interval" value="2"/>
         <param name="recovery_alpha_slow" value="0.01"/>
         <param name="recovery_alpha_fast" value="0.1"/>
-        <param name="initial_pose_x" value="30.0" /> <!--.29-->
-        <param name="initial_pose_y" value="4.3" /> 
-        <param name="initial_pose_a" value="3.14" />
+        <param name="initial_pose_x" value="20.15" /> <!-- In front of the lab in the hallway, facing grinstein's lab -->
+        <param name="initial_pose_y" value="3.56" /> 
+        <param name="initial_pose_a" value="0.00" />
         <remap from="/scan" to="/$(arg laser_scan_topic)"/>
     </node>
 

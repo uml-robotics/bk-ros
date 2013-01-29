@@ -855,6 +855,7 @@ int hbins, sbins;
 		if( !ros::ok() ){ CleanupExit(); }
 	}
 	cam_info_sub.shutdown();
+    ROS_INFO("[bk_skeletal_tracker] Found camera info. Initializing OpenNi.");
 	
 	// Similarity of currently tracked user
 	sim_pub_         = nh_.advertise<std_msgs::Float64>("bk_skeletal_tracker/sim",0);
