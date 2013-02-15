@@ -52,6 +52,7 @@ class FaceMe(object):
 
             # Math to determine which way to turn, if at all.
             angle_to_turn = math.atan2(transformed_goal.point.y, transformed_goal.point.x)
+            print "X: %s, Y: %s, Angle: %s"%(transformed_goal.point.x, transformed_goal.point.y, angle_to_turn)
 
             # Set the velocity command to output
             command = Twist()
